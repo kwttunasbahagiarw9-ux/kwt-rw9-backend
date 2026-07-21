@@ -67,8 +67,16 @@ app.use(
   })
 );
 
+import mongoose from 'mongoose';
+
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'kwt-rw9-api' });
+  const dbState = mongoose.connection.readyState;
+  const dbStatus = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' };
+  res.json({
+    status: 'ok',
+    service: 'kwt-rw9-api',
+    database: dbStatus[dbState] || 'unknown'
+  });
 });
 
 app.use('/api/auth', authRoutes);
